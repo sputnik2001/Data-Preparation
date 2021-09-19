@@ -1,0 +1,34 @@
+import pandas as pd
+
+data = pd.read_csv('/content/earthquakes.csv', sep = ',')
+data.head()
+
+data.shape
+
+#1.How many earthquake have magType 'ml' and type 'explosion'?
+a = sum((data['magType'] == 'ml') & (data['type'] == 'explosion'))
+a
+
+#2.Calculate the mean of mag in Alaska and the distance is smaller than 100km, example:
+#"62km W of Cantwell, Alaska".
+b = data[(data['place'].str.contains('Alaska')) &~ (data['place'].str.contains('\d{3,}',regex = True))]
+b.mag.mean()
+
+#3.Calculate the mean of mag in each quarter (q1:m1-m3, q2: m4-m6, q3: m7-m9, q4: m10-12),
+# the "time" field stores the milliseconds from 1/1/1970, hint: timestamp.
+data['time'] = pd.to_datetime(data['time'], unit = 'ms')
+data['time'].unique
+
+q1=data[(data['time'].dt.month>=1)&(data['time'].dt.month<=3)]
+q1.mag.mean()
+
+q2=data[(data['time'].dt.month>=4)&(data['time'].dt.month<=6)]
+q2.mag.mean()
+
+q3=data[(data['time'].dt.month>=7)&(data['time'].dt.month<=9)]
+q3.mag.mean()
+
+q4=data[(data['time'].dt.month>=10)&(data['time'].dt.month<=12)]
+q4.mag.mean()
+
+pd.DatetimeIndex(data['time']).month.value_counts()
